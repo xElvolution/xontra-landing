@@ -2,10 +2,10 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, X, Zap, Moon, Sun } from "lucide-react"
+import { Menu, X, Moon, Sun } from "lucide-react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import { useTheme } from "@/components/theme-provider"
 
@@ -19,7 +19,6 @@ const navigation = [
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
   const { theme, setTheme } = useTheme()
 
   const toggleTheme = () => {
@@ -32,9 +31,13 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Xontra Logo"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
             <span className="text-xl font-bold text-foreground">Xontra</span>
           </Link>
 
@@ -55,10 +58,7 @@ export function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    pathname === item.href ? "text-primary" : "text-muted-foreground",
-                  )}
+                  className="text-sm font-medium transition-colors hover:text-primary text-muted-foreground"
                 >
                   {item.name}
                 </Link>
@@ -89,9 +89,13 @@ export function Navigation() {
             <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-xl border-border/50">
               <div className="flex items-center justify-between mb-8">
                 <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
+                  <Image
+                    src="/logo.png"
+                    alt="Xontra Logo"
+                    width={32}
+                    height={32}
+                    className="w-8 h-8"
+                  />
                   <span className="text-xl font-bold text-foreground">Xontra</span>
                 </Link>
                 <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
@@ -117,10 +121,7 @@ export function Navigation() {
                       key={item.name}
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className={cn(
-                        "text-lg font-medium transition-colors hover:text-primary",
-                        pathname === item.href ? "text-primary" : "text-muted-foreground",
-                      )}
+                      className="text-lg font-medium transition-colors hover:text-primary text-muted-foreground"
                     >
                       {item.name}
                     </Link>
