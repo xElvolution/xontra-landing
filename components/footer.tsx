@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Twitter, MessageCircle, Github, ArrowRight } from "lucide-react"
@@ -20,9 +21,13 @@ export function Footer() {
           {/* Brand Section */}
           <div className="lg:col-span-1 space-y-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">N</span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Xontra Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10"
+              />
               <span className="text-2xl font-bold text-foreground">Xontra</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">
