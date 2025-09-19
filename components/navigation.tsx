@@ -11,7 +11,7 @@ import { useTheme } from "@/components/theme-provider"
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Beta", href: "/beta" },
+  { name: "Beta", href: "https://app.xontra.xyz", external: true },
   { name: "Waitlist", href: "/waitlist" },
   { name: "Docs", href: "https://docs.xontra.xyz", external: true },
   { name: "Community", href: "/community" },
@@ -141,7 +141,7 @@ export function Navigation() {
                       </>
                     )}
                   </Button>
-                  <Link href="/" onClick={() => setIsOpen(false)}>
+                  <Link href="https://app.xontra.xyz" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>
                     <Button className="w-full bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 hover:opacity-90 text-white">
                       Beta App
                     </Button>

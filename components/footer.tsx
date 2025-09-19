@@ -48,7 +48,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold text-foreground">Platform</h3>
             <div className="space-y-3">
               {[
-                { name: "Beta App", href: "/beta" },
+                { name: "Beta App", href: "https://app.xontra.xyz", external: true },
                 { name: "Staking", href: "/staking" },
                 { name: "Waitlist", href: "/waitlist" },
                 { name: "Documentation", href: "/" },
@@ -56,6 +56,8 @@ export function Footer() {
                 <Link
                   key={link.name}
                   href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
                   className="block text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {link.name}
