@@ -11,7 +11,7 @@ import { useTheme } from "@/components/theme-provider"
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Beta", href: "/beta", external: true },
+  { name: "Beta", href: "/beta" },
   { name: "Waitlist", href: "/waitlist" },
   { name: "Docs", href: "https://docs.xontra.xyz", external: true },
   { name: "Community", href: "/community" },
