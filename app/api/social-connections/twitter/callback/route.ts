@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
       }
 
       console.log("✅ Twitter connection saved successfully")
-      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/waitlist?success=twitter_connected`)
+      return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/dashboard?email=${encodeURIComponent(userEmail)}&success=twitter_connected`)
     } catch (dbError) {
       console.log("⚠️ Database table might not exist:", dbError)
       return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/waitlist?error=database_not_ready`)

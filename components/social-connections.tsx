@@ -7,8 +7,12 @@ import { Badge } from "@/components/ui/badge"
 import { Twitter, MessageSquare, CheckCircle, ExternalLink, Loader2 } from "lucide-react"
 import { useSocialConnections } from "@/hooks/use-social-connections"
 
-export function SocialConnections() {
-  const { connections, isLoading, connectTwitter, connectDiscord, disconnect } = useSocialConnections()
+interface SocialConnectionsProps {
+  userEmail?: string
+}
+
+export function SocialConnections({ userEmail }: SocialConnectionsProps) {
+  const { connections, isLoading, connectTwitter, connectDiscord, disconnect } = useSocialConnections(userEmail)
   const [loadingStates, setLoadingStates] = useState({
     twitter: false,
     discord: false,
@@ -57,12 +61,9 @@ export function SocialConnections() {
   return (
     <Card className="bg-card/50 border-border/50 backdrop-blur-xl">
       <CardHeader className="pb-4">
-        <CardTitle className="text-foreground flex items-center gap-2">
+        <CardTitle className="text-white flex items-center gap-2">
           <ExternalLink className="w-5 h-5 text-purple-400" />
           Social Connections
-          <Badge variant="secondary" className="ml-2 text-xs">
-            +5 points each
-          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -73,11 +74,11 @@ export function SocialConnections() {
               <Twitter className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <div className="font-medium text-foreground">Twitter</div>
+              <div className="font-medium text-white">Twitter</div>
               {connections?.twitter ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm text-purple-600">@{connections.twitter.username}</span>
+                  <span className="text-sm text-white">@{connections.twitter.username}</span>
                 </div>
               ) : (
                 <div className="text-sm text-muted-foreground">Not connected</div>
@@ -85,9 +86,6 @@ export function SocialConnections() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {connections?.twitter && (
-              <Badge className="bg-purple-700/10 text-purple-600 border-purple-700/20">+5 points</Badge>
-            )}
             <Button
               variant={connections?.twitter ? "outline" : "default"}
               size="sm"
@@ -117,11 +115,11 @@ export function SocialConnections() {
               <MessageSquare className="w-5 h-5 text-purple-400" />
             </div>
             <div>
-              <div className="font-medium text-foreground">Discord</div>
+              <div className="font-medium text-white">Discord</div>
               {connections?.discord ? (
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm text-purple-600">{connections.discord.username}</span>
+                  <span className="text-sm text-white">{connections.discord.username}</span>
                 </div>
               ) : (
                 <div className="text-sm text-muted-foreground">Not connected</div>
@@ -129,9 +127,6 @@ export function SocialConnections() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {connections?.discord && (
-              <Badge className="bg-purple-700/10 text-purple-600 border-purple-700/20">+5 points</Badge>
-            )}
             <Button
               variant={connections?.discord ? "outline" : "default"}
               size="sm"
@@ -155,14 +150,6 @@ export function SocialConnections() {
         </div>
 
         {/* Connection Benefits */}
-        <div className="p-3 bg-gradient-to-r from-purple-700/10 to-purple-500/10 border border-purple-700/20 rounded-lg">
-          <div className="text-sm font-medium text-foreground mb-1">Why connect your accounts?</div>
-          <ul className="text-xs text-muted-foreground space-y-1">
-            <li>• Earn +5 bonus points for each connection</li>
-            <li>• Verify your identity and build trust</li>
-            <li>• Get priority access to exclusive features</li>
-          </ul>
-        </div>
       </CardContent>
     </Card>
   )

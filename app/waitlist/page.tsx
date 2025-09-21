@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Navigation } from "@/components/navigation"
 import { FlowingBackground } from "@/components/flowing-background"
 import { Footer } from "@/components/footer"
@@ -34,6 +34,7 @@ export default function WaitlistPage() {
   const [verifiedUserData, setVerifiedUserData] = useState<any>(null)
 
   const searchParams = useSearchParams()
+  const router = useRouter()
   const { isLoading, error, success, waitlistData, stats, joinWaitlist, loadStats, reset } = useWaitlist()
 
   const {
@@ -98,11 +99,8 @@ export default function WaitlistPage() {
     })
 
     if (result.success) {
-      // Clear form only for new users
-      setEmail("")
-      setAddress("")
-      setReferralCode("")
-      resetRecaptcha()
+      // Redirect to dashboard with email parameter
+      router.push(`/dashboard?email=${encodeURIComponent(email)}`)
     } else {
       // Reset reCAPTCHA on error to allow retry
       resetRecaptcha()
@@ -116,9 +114,8 @@ export default function WaitlistPage() {
       console.log("📋 Verification result:", result)
 
       if (result.success && result.data) {
-        console.log("✅ Email verified successfully, setting user data")
-        setVerifiedUserData(result.data)
-        setShowVerification(false)
+        console.log("✅ Email verified successfully, redirecting to dashboard")
+        router.push(`/dashboard?email=${encodeURIComponent(emailToVerify)}`)
         return true
       } else {
         console.log("❌ Email verification failed:", result.error)
@@ -130,96 +127,6 @@ export default function WaitlistPage() {
     }
   }
 
-  // Show success page if user is registered (either from new registration or email verification)
-  const currentUserData = success && waitlistData ? waitlistData : verifiedUserData
-  if (currentUserData) {
-    return (
-      <ThemeProvider>
-        <div className="min-h-screen bg-background relative overflow-hidden">
-          <FlowingBackground />
-          <Navigation />
-
-          <main className="relative z-10 pt-32 pb-20">
-            <div className="max-w-4xl mx-auto px-6">
-              <div className="text-center mb-12">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-purple-600 via-purple-700 to-purple-700 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-12 h-12 text-white" />
-                </div>
-                <h1 className="text-4xl font-bold text-foreground mb-4">Welcome to Xontra!</h1>
-                <p className="text-xl text-muted-foreground mb-4">
-                  You're now part of the future of AI-powered trading.
-                </p>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  <div className="bg-purple-700/20 text-purple-600 border border-purple-700/50 text-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
-                    <Users className="w-3 h-3" />
-                    Registered: {currentUserData.email}
-                  </div>
-                  <div className="bg-purple-500/20 text-purple-400 border border-purple-500/50 text-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
-                    <Shield className="w-3 h-3" />
-                    Verified
-                  </div>
-                  {currentUserData.referredBy && (
-                    <div className="bg-purple-700/20 text-purple-600 border border-purple-700/50 text-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
-                      <Gift className="w-3 h-3" />
-                      Referred by: {currentUserData.referredBy}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid lg:grid-cols-2 gap-8 mb-8">
-                <EnhancedPositionTracker
-                  currentPosition={currentUserData.position}
-                  leaderboardRank={currentUserData.leaderboardRank || currentUserData.position}
-                  previousPosition={previousPosition}
-                  totalCount={currentUserData.totalCount || stats.totalUsers}
-                  referralCount={currentUserData.referralCount || stats.referralCount}
-                  lastUpdated={currentUserData.updatedAt}
-                  onRefresh={() => loadStats(currentUserData.email)}
-                  refreshing={isLoading}
-                />
-
-                <ReferralSystem
-                  referralCode={currentUserData.referralCode}
-                  referralCount={currentUserData.referralCount || stats.referralCount}
-                  onShare={() => {
-                    console.log("User shared referral link")
-                  }}
-                />
-              </div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                <Card className="bg-card/30 border-border/30 backdrop-blur-xl">
-                  <CardContent className="p-6 text-center">
-                    <Zap className="w-8 h-8 mx-auto mb-3 text-purple-600" />
-                    <h3 className="font-semibold text-foreground mb-2">Early Access</h3>
-                    <p className="text-sm text-muted-foreground">Get priority access when we launch</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-card/30 border-border/30 backdrop-blur-xl">
-                  <CardContent className="p-6 text-center">
-                    <Users className="w-8 h-8 mx-auto mb-3 text-purple-600" />
-                    <h3 className="font-semibold text-foreground mb-2">Exclusive Community</h3>
-                    <p className="text-sm text-muted-foreground">Join our private Discord for early users</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-card/30 border-border/30 backdrop-blur-xl">
-                  <CardContent className="p-6 text-center">
-                    <Gift className="w-8 h-8 mx-auto mb-3 text-purple-600" />
-                    <h3 className="font-semibold text-foreground mb-2">Launch Rewards</h3>
-                    <p className="text-sm text-muted-foreground">Special bonuses for early supporters</p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </main>
-          <Footer />
-        </div>
-      </ThemeProvider>
-    )
-  }
 
   return (
     <ThemeProvider>

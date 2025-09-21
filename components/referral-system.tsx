@@ -8,20 +8,37 @@ import { Badge } from "@/components/ui/badge"
 import { Copy, Check, Share2, Gift, Zap, Twitter } from "lucide-react"
 import { ReferralUtils } from "@/lib/referral-utils"
 
+interface SocialConnection {
+  twitter?: {
+    id: string
+    username: string
+    connected_at: string
+  }
+  discord?: {
+    id: string
+    username: string
+    connected_at: string
+  }
+}
+
 interface ReferralSystemProps {
   referralCode: string
   referralCount: number
   onShare?: () => void
+  connections?: SocialConnection | null
 }
 
-export function ReferralSystem({ referralCode, referralCount, onShare }: ReferralSystemProps) {
+export function ReferralSystem({ referralCode, referralCount, onShare, connections }: ReferralSystemProps) {
   const [copied, setCopied] = useState(false)
   const [shareMethod, setShareMethod] = useState<"link" | "code">("link")
 
   const referralLink = referralCode ? ReferralUtils.generateReferralLink(referralCode) : ""
 
-  // Calculate points gained: 50 for joining + 10 per referral
-  const pointsGained = 50 + referralCount * 10
+  // Calculate social connection points
+  const socialConnectionPoints = (connections?.twitter ? 100 : 0) + (connections?.discord ? 100 : 0)
+  
+  // Calculate points gained: 50 for joining + 10 per referral + 100 per social connection
+  const pointsGained = 50 + referralCount * 10 + socialConnectionPoints
 
   const shareText =
     "🚀 Join me on the Xontra waitlist for early access to AI-powered trading! Get exclusive benefits and be part of the future of DeFi. 💎"
@@ -69,11 +86,19 @@ export function ReferralSystem({ referralCode, referralCount, onShare }: Referra
   }
 
   const getReferralTier = () => {
-    if (referralCount >= 50) return { name: "Diamond", color: "from-purple-600 to-purple-500", bonus: "50 points" }
-    if (referralCount >= 25) return { name: "Gold", color: "from-purple-400 to-purple-500", bonus: "25 points" }
-    if (referralCount >= 10) return { name: "Silver", color: "from-gray-300 to-gray-500", bonus: "10 points" }
-    if (referralCount >= 5) return { name: "Bronze", color: "from-purple-600 to-purple-800", bonus: "5 points" }
+    if (referralCount >= 50) return { name: "Diamond", color: "from-cyan-200 to-cyan-400", bonus: "50 points" }
+    if (referralCount >= 25) return { name: "Gold", color: "from-yellow-500 to-yellow-600", bonus: "25 points" }
+    if (referralCount >= 10) return { name: "Silver", color: "from-gray-300 to-gray-400", bonus: "10 points" }
+    if (referralCount >= 5) return { name: "Bronze", color: "from-amber-600 to-amber-700", bonus: "5 points" }
     return { name: "Starter", color: "from-purple-600 to-purple-600", bonus: "0 points" }
+  }
+
+  const getTierTextColor = () => {
+    if (referralCount >= 50) return "text-cyan-300" // Diamond - Real diamond color
+    if (referralCount >= 25) return "text-yellow-500" // Gold
+    if (referralCount >= 10) return "text-gray-300" // Silver
+    if (referralCount >= 5) return "text-amber-600" // Bronze
+    return "text-purple-600" // Starter
   }
 
   const tier = getReferralTier()
@@ -93,16 +118,16 @@ export function ReferralSystem({ referralCode, referralCount, onShare }: Referra
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-purple-600">{referralCount}</div>
-            <div className="text-xs text-muted-foreground">Referrals</div>
+            <div className={`text-2xl font-bold ${getTierTextColor()}`}>{referralCount}</div>
+            <div className="text-xs text-white">Referrals</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-600">{pointsGained}</div>
-            <div className="text-xs text-muted-foreground">Points Gained</div>
+            <div className={`text-2xl font-bold ${getTierTextColor()}`}>{pointsGained}</div>
+            <div className="text-xs text-white">Points Gained</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-600">{Math.max(0, 50 - referralCount)}</div>
-            <div className="text-xs text-muted-foreground">To Diamond</div>
+            <div className={`text-2xl font-bold ${getTierTextColor()}`}>{Math.max(0, 50 - referralCount)}</div>
+            <div className="text-xs text-white">To Diamond</div>
           </div>
         </div>
 
@@ -189,20 +214,26 @@ export function ReferralSystem({ referralCode, referralCount, onShare }: Referra
         <div className="p-4 bg-gradient-to-r from-purple-700/10 to-purple-500/10 border border-purple-700/20 rounded-lg">
           <div className="flex items-center gap-2 mb-3">
             <Zap className="w-4 h-4 text-purple-600" />
-            <span className="font-medium text-foreground">Points Gained Breakdown</span>
+            <span className="font-medium text-white">Points Gained Breakdown</span>
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Joining Bonus:</span>
+              <span className="text-white">Joining Bonus:</span>
               <span className="text-purple-600 font-medium">+50 points</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Referral Rewards ({referralCount} × 10):</span>
+              <span className="text-white">Referral Rewards ({referralCount} × 10):</span>
               <span className="text-purple-600 font-medium">+{referralCount * 10} points</span>
             </div>
+            {socialConnectionPoints > 0 && (
+              <div className="flex justify-between">
+                <span className="text-white">Social Connections:</span>
+                <span className="text-purple-600 font-medium">+{socialConnectionPoints} points</span>
+              </div>
+            )}
             <div className="border-t border-border/30 pt-2">
               <div className="flex justify-between font-semibold">
-                <span className="text-foreground">Total Points Gained:</span>
+                <span className="text-white">Total Points Gained:</span>
                 <span className="text-primary">{pointsGained} points</span>
               </div>
             </div>
@@ -220,6 +251,16 @@ export function ReferralSystem({ referralCode, referralCount, onShare }: Referra
             <li>• Each referral gives you 10 more points</li>
             <li>• Your referrals get 50 point boost</li>
             <li>• Higher points = better leaderboard ranking</li>
+          </ul>
+        </div>
+
+        {/* Why Connect Accounts */}
+        <div className="p-4 bg-gradient-to-r from-purple-700/10 to-purple-500/10 border border-purple-700/20 rounded-lg">
+          <div className="text-sm font-medium text-foreground mb-2">Why connect your accounts?</div>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            <li>• Earn +100 bonus points for each connection (Twitter + Discord = 200 points)</li>
+            <li>• Verify your identity and build trust</li>
+            <li>• Get priority access to exclusive features</li>
           </ul>
         </div>
 

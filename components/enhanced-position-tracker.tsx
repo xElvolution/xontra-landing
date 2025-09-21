@@ -7,6 +7,19 @@ import { Button } from "@/components/ui/button"
 import { SocialConnections } from "@/components/social-connections"
 import { TrendingUp, TrendingDown, Trophy, RefreshCw, Clock, Crown } from "lucide-react"
 
+interface SocialConnection {
+  twitter?: {
+    id: string
+    username: string
+    connected_at: string
+  }
+  discord?: {
+    id: string
+    username: string
+    connected_at: string
+  }
+}
+
 interface EnhancedPositionTrackerProps {
   currentPosition: number
   leaderboardRank?: number
@@ -16,6 +29,8 @@ interface EnhancedPositionTrackerProps {
   lastUpdated: string
   onRefresh: () => Promise<void>
   refreshing?: boolean
+  userEmail?: string
+  connections?: SocialConnection | null
 }
 
 export function EnhancedPositionTracker({
@@ -27,13 +42,18 @@ export function EnhancedPositionTracker({
   lastUpdated,
   onRefresh,
   refreshing = false,
+  userEmail,
+  connections,
 }: EnhancedPositionTrackerProps) {
   const [positionChange, setPositionChange] = useState<"up" | "down" | "same" | null>(null)
   const [showAnimation, setShowAnimation] = useState(false)
   const [timeAgo, setTimeAgo] = useState("")
 
-  // Calculate points gained: 50 for joining + 10 per referral
-  const pointsGained = 50 + referralCount * 10
+  // Calculate social connection points
+  const socialConnectionPoints = (connections?.twitter ? 100 : 0) + (connections?.discord ? 100 : 0)
+  
+  // Calculate points gained: 50 for joining + 10 per referral + 100 per social connection
+  const pointsGained = 50 + referralCount * 10 + socialConnectionPoints
 
   // Use leaderboard rank if available, otherwise fall back to queue position
   const displayPosition = leaderboardRank || currentPosition
@@ -79,16 +99,20 @@ export function EnhancedPositionTracker({
   }, [lastUpdated])
 
   const getPositionColor = () => {
-    if (displayPosition <= 10) return "text-purple-400"
-    if (displayPosition <= 100) return "text-purple-600"
+    if (displayPosition === 1) return "text-cyan-300" // Diamond - Real diamond color
+    if (displayPosition <= 10) return "text-yellow-500" // Gold
+    if (displayPosition <= 50) return "text-gray-300" // Silver
+    if (displayPosition <= 100) return "text-amber-600" // Bronze
     if (displayPosition <= 500) return "text-purple-600"
     if (displayPosition <= 1000) return "text-purple-600"
     return "text-muted-foreground"
   }
 
   const getPositionBadge = () => {
-    if (displayPosition <= 10) return { text: "VIP", color: "bg-gradient-to-r from-purple-400 to-purple-500" }
-    if (displayPosition <= 100) return { text: "Early Access", color: "bg-gradient-to-r from-purple-600 to-purple-700" }
+    if (displayPosition === 1) return { text: "Diamond", color: "bg-gradient-to-r from-cyan-200 to-cyan-400" }
+    if (displayPosition <= 10) return { text: "Gold", color: "bg-gradient-to-r from-yellow-500 to-yellow-600" }
+    if (displayPosition <= 50) return { text: "Silver", color: "bg-gradient-to-r from-gray-300 to-gray-400" }
+    if (displayPosition <= 100) return { text: "Bronze", color: "bg-gradient-to-r from-amber-600 to-amber-700" }
     if (displayPosition <= 500) return { text: "Priority", color: "bg-gradient-to-r from-purple-600 to-purple-700" }
     return { text: "Standard", color: "bg-gradient-to-r from-purple-600 to-purple-500" }
   }
@@ -169,7 +193,7 @@ export function EnhancedPositionTracker({
             >
               <div className="flex items-center justify-center gap-2">
                 {positionGain > 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                <span className="font-medium">
+                <span className="font-medium text-white">
                   {positionGain > 0 ? "Moved up" : "Moved down"} {Math.abs(positionGain)} rank
                   {Math.abs(positionGain) > 1 ? "s" : ""}
                 </span>
@@ -181,15 +205,15 @@ export function EnhancedPositionTracker({
           <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/50">
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">{referralCount}</div>
-              <div className="text-xs text-muted-foreground">Referrals Made</div>
+              <div className="text-xs text-white">Referrals Made</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">{pointsGained}</div>
-              <div className="text-xs text-muted-foreground">Points Gained</div>
+              <div className="text-xs text-white">Points Gained</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">{totalCount.toLocaleString()}</div>
-              <div className="text-xs text-muted-foreground">Total Users</div>
+              <div className="text-xs text-white">Total Users</div>
             </div>
           </div>
 
@@ -229,7 +253,7 @@ export function EnhancedPositionTracker({
       </Card>
 
       {/* Social Connections */}
-      <SocialConnections />
+      <SocialConnections userEmail={userEmail} />
     </div>
   )
 }

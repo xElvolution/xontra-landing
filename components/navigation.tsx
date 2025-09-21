@@ -4,10 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, X, Moon, Sun } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/components/theme-provider"
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -19,11 +18,6 @@ const navigation = [
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
@@ -66,12 +60,8 @@ export function Navigation() {
             )}
           </div>
 
-          {/* Desktop CTA and Theme Toggle */}
+          {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={toggleTheme} className="w-9 h-9 p-0">
-              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              <span className="sr-only">Toggle theme</span>
-            </Button>
             <Link href="https://app.xontra.xyz" target="_blank" rel="noopener noreferrer">
               <Button className="bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 hover:opacity-90 text-white">
                 Beta App
@@ -129,19 +119,6 @@ export function Navigation() {
                 )}
 
                 <div className="flex flex-col gap-3 pt-6 border-t border-border/50">
-                  <Button variant="outline" onClick={toggleTheme} className="w-full justify-start gap-2 bg-transparent">
-                    {theme === "dark" ? (
-                      <>
-                        <Sun className="w-4 h-4" />
-                        Switch to Light Mode
-                      </>
-                    ) : (
-                      <>
-                        <Moon className="w-4 h-4" />
-                        Switch to Dark Mode
-                      </>
-                    )}
-                  </Button>
                   <Link href="https://app.xontra.xyz" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>
                     <Button className="w-full bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 hover:opacity-90 text-white">
                       Beta App

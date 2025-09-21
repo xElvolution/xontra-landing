@@ -15,13 +15,18 @@ interface SocialConnection {
   }
 }
 
-export function useSocialConnections() {
+export function useSocialConnections(userEmail?: string) {
   const [connections, setConnections] = useState<SocialConnection | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   const fetchConnections = async () => {
+    if (!userEmail) {
+      setIsLoading(false)
+      return
+    }
+    
     try {
-      const response = await fetch("/api/social-connections")
+      const response = await fetch(`/api/social-connections?email=${encodeURIComponent(userEmail)}`)
       if (response.ok) {
         const data = await response.json()
         setConnections(data.connections)
@@ -34,8 +39,12 @@ export function useSocialConnections() {
   }
 
   const connectTwitter = async () => {
+    if (!userEmail) {
+      throw new Error("User email required for social connections")
+    }
+    
     try {
-      const response = await fetch("/api/social-connections/twitter/auth")
+      const response = await fetch(`/api/social-connections/twitter/auth?email=${encodeURIComponent(userEmail)}`)
       if (response.ok) {
         const data = await response.json()
         if (data.authUrl) {
@@ -49,8 +58,12 @@ export function useSocialConnections() {
   }
 
   const connectDiscord = async () => {
+    if (!userEmail) {
+      throw new Error("User email required for social connections")
+    }
+    
     try {
-      const response = await fetch("/api/social-connections/discord/auth")
+      const response = await fetch(`/api/social-connections/discord/auth?email=${encodeURIComponent(userEmail)}`)
       if (response.ok) {
         const data = await response.json()
         if (data.authUrl) {
@@ -79,7 +92,7 @@ export function useSocialConnections() {
 
   useEffect(() => {
     fetchConnections()
-  }, [])
+  }, [userEmail])
 
   return {
     connections,

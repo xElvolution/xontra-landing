@@ -36,15 +36,20 @@ export function PositionTracker({
   }, [currentPosition, previousPosition])
 
   const getPositionColor = () => {
-    if (currentPosition <= 100) return "text-purple-600"
+    if (currentPosition === 1) return "text-cyan-300" // Diamond - Real diamond color
+    if (currentPosition <= 10) return "text-yellow-500" // Gold
+    if (currentPosition <= 50) return "text-gray-300" // Silver
+    if (currentPosition <= 100) return "text-amber-600" // Bronze
     if (currentPosition <= 500) return "text-purple-600"
     if (currentPosition <= 1000) return "text-purple-600"
     return "text-muted-foreground"
   }
 
   const getPositionBadge = () => {
-    if (currentPosition <= 10) return { text: "VIP", color: "bg-gradient-to-r from-purple-400 to-purple-500" }
-    if (currentPosition <= 100) return { text: "Early Access", color: "bg-gradient-to-r from-purple-600 to-purple-700" }
+    if (currentPosition === 1) return { text: "Diamond", color: "bg-gradient-to-r from-cyan-200 to-cyan-400" }
+    if (currentPosition <= 10) return { text: "Gold", color: "bg-gradient-to-r from-yellow-500 to-yellow-600" }
+    if (currentPosition <= 50) return { text: "Silver", color: "bg-gradient-to-r from-gray-300 to-gray-400" }
+    if (currentPosition <= 100) return { text: "Bronze", color: "bg-gradient-to-r from-amber-600 to-amber-700" }
     if (currentPosition <= 500) return { text: "Priority", color: "bg-gradient-to-r from-purple-600 to-purple-700" }
     return { text: "Standard", color: "bg-gradient-to-r from-purple-600 to-purple-500" }
   }

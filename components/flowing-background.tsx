@@ -1,11 +1,9 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-import { useTheme } from "@/components/theme-provider"
 
 export function FlowingBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { theme } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -22,16 +20,13 @@ export function FlowingBackground() {
     resizeCanvas()
     window.addEventListener("resize", resizeCanvas)
 
-    // Enhanced gradient colors for both themes
+    // Enhanced gradient colors for dark theme
     const trails = [
       {
         points: [],
-        colors: {
-          dark: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
-          light: ["#7c3aed", "#8b5cf6", "#a78bfa"],
-        },
+        colors: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
         width: 4,
-        opacity: theme === "dark" ? 0.8 : 0.6,
+        opacity: 0.8,
         speed: 0.02,
         amplitude: 120,
         frequency: 0.01,
@@ -39,12 +34,9 @@ export function FlowingBackground() {
       },
       {
         points: [],
-        colors: {
-          dark: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
-          light: ["#7c3aed", "#8b5cf6", "#a78bfa"],
-        },
+        colors: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
         width: 3,
-        opacity: theme === "dark" ? 0.7 : 0.5,
+        opacity: 0.7,
         speed: 0.015,
         amplitude: 100,
         frequency: 0.008,
@@ -52,12 +44,9 @@ export function FlowingBackground() {
       },
       {
         points: [],
-        colors: {
-          dark: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
-          light: ["#7c3aed", "#8b5cf6", "#a78bfa"],
-        },
+        colors: ["#8b5cf6", "#a78bfa", "#c4b5fd"], // purple gradient
         width: 3.5,
-        opacity: theme === "dark" ? 0.6 : 0.4,
+        opacity: 0.6,
         speed: 0.018,
         amplitude: 140,
         frequency: 0.012,
@@ -74,7 +63,7 @@ export function FlowingBackground() {
 
       trails.forEach((trail, trailIndex) => {
         trail.points = []
-        const currentColors = trail.colors[theme]
+        const currentColors = trail.colors
 
         // Create flowing curved path
         for (let i = 0; i <= canvas.width + 200; i += 4) {
@@ -132,7 +121,7 @@ export function FlowingBackground() {
       window.removeEventListener("resize", resizeCanvas)
       cancelAnimationFrame(animationId)
     }
-  }, [theme])
+  }, [])
 
   return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-0" />
 }
